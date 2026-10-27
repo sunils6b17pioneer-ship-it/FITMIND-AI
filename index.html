@@ -1,197 +1,123 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>FITMIND AI — Live Coach</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>FITMIND AI V3 — Form Coach</title>
 <style>
-:root{color-scheme:dark;--bg:#08111d;--panel:#101e30;--line:#23364c;--mint:#54f0b5;--blue:#65a9ff;--red:#ff7373;--text:#eef6ff;--muted:#a8bad0}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#132944,#08111d 55%);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
-main{max-width:900px;margin:auto;padding:16px}header{padding:8px 0 14px}h1{margin:0;font-size:clamp(27px,6vw,42px);letter-spacing:-1.2px}h1 span{color:var(--mint)}.sub{color:var(--muted);margin:5px 0 0;font-size:14px}
-.panel{background:rgba(16,30,48,.95);border:1px solid var(--line);border-radius:18px;padding:14px;margin:12px 0;box-shadow:0 12px 35px #0002}
-.controls{display:grid;grid-template-columns:1fr 1fr;gap:10px}label{font-size:12px;color:var(--muted);display:block;margin:0 0 6px}
-select,button{font:inherit;border-radius:12px;border:1px solid #314762;background:#0a1726;color:var(--text);padding:12px;width:100%}
-button{font-weight:700;cursor:pointer}button.primary{background:var(--mint);border-color:var(--mint);color:#062018}button:disabled{opacity:.5}
-.stage{position:relative;overflow:hidden;background:#02070d;border-radius:16px;aspect-ratio:4/3;border:1px solid #2b4057}
-video,canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}canvas{pointer-events:none}
-.stageNote{position:absolute;left:10px;right:10px;bottom:10px;background:#06101dcc;padding:8px 10px;border-radius:10px;font-size:12px;color:#d8e8fa}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{background:#091625;border:1px solid var(--line);border-radius:13px;padding:11px}.num{font-size:27px;font-weight:800;color:var(--mint);line-height:1.2}.small{font-size:11px;color:var(--muted);margin-top:4px}
-.feedback{font-size:16px;font-weight:750;margin:0}.feedback.good{color:var(--mint)}.feedback.bad{color:var(--red)}.feedback.neutral{color:#ffd477}
-.hint{font-size:12px;color:var(--muted);line-height:1.5}.row{display:flex;gap:9px;margin-top:10px}.row button{flex:1}.pill{display:inline-block;padding:4px 8px;border:1px solid #314762;border-radius:99px;color:var(--muted);font-size:11px;margin-right:5px}
-@media(max-width:480px){main{padding:12px}.panel{padding:11px}.controls{grid-template-columns:1fr}.num{font-size:23px}.row{gap:7px}}
-</style>
-</head>
+:root{color-scheme:dark;--bg:#07111d;--panel:#101f31;--border:#263b52;--mint:#62efba;--red:#ff7777;--amber:#ffd477;--muted:#a8bbcf}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(160deg,#142944,#07111d 48%);color:#eff7ff;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+main{max-width:960px;margin:auto;padding:14px}header{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:5px 0 13px}h1{font-size:clamp(26px,6vw,40px);margin:0;letter-spacing:-1px}h1 span{color:var(--mint)}.tag{font-size:11px;color:var(--muted)}
+.panel{background:#101f31ed;border:1px solid var(--border);border-radius:18px;padding:13px;margin:11px 0}.label{font-size:11px;color:var(--muted);font-weight:800;letter-spacing:1px;margin-bottom:7px;display:block}
+select,button{font:inherit;border-radius:12px;border:1px solid #344b65;background:#091726;color:#eff7ff;padding:12px;width:100%}button{font-weight:750;cursor:pointer}button.primary{background:var(--mint);border-color:var(--mint);color:#062319}button:disabled{opacity:.5}
+.topgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.demoBox{display:flex;align-items:center;gap:12px;min-height:135px}.demoFigure{width:125px;min-width:100px;height:120px;border-radius:15px;background:radial-gradient(circle,#233c55,#091726);display:grid;place-items:center;overflow:hidden}.demoFigure svg{width:100%;height:100%;overflow:visible}.figure{stroke:#d8eaff;stroke-width:8;stroke-linecap:round;stroke-linejoin:round;fill:none}.joint{fill:var(--mint);stroke:none}.demoText{font-size:13px;color:var(--muted);line-height:1.45}.demoTitle{font-size:16px;font-weight:800;color:#eff7ff;margin-bottom:5px}
+.cameraStage{position:relative;background:#000;border-radius:16px;overflow:hidden;aspect-ratio:3/4;max-height:72vh;min-height:250px;border:1px solid #344b65}.cameraStage:fullscreen{aspect-ratio:auto;max-height:none;height:100vh;border:0;border-radius:0;background:#000}.cameraStage:fullscreen video{object-fit:contain}
+video{position:absolute;width:100%;height:100%;inset:0;object-fit:cover;transform:scaleX(-1)}.camOverlay{position:absolute;left:10px;right:10px;top:10px;display:flex;justify-content:space-between;gap:8px;pointer-events:none}.camBadge{background:#07111ddd;border:1px solid #ffffff26;border-radius:999px;padding:7px 10px;font-size:11px}.camBottom{position:absolute;left:10px;right:10px;bottom:10px;background:#07111de8;border:1px solid #ffffff20;border-radius:14px;padding:12px}.status{font-weight:850;font-size:18px}.status.good{color:var(--mint)}.status.bad{color:var(--red)}.status.wait{color:var(--amber)}.statusSub{font-size:12px;color:#cfdeee;margin-top:3px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{background:#091726;border:1px solid var(--border);border-radius:13px;padding:11px}.num{font-size:27px;font-weight:900;color:var(--mint)}.small{font-size:10px;color:var(--muted);letter-spacing:.7px}
+.buttons{display:flex;gap:8px;margin-top:10px}.buttons>*{flex:1}.hint{font-size:12px;line-height:1.5;color:var(--muted)}.warn{color:#ffe0a0}
+@media(min-width:720px){.cameraStage{aspect-ratio:16/9;max-height:70vh}.demoBox{min-height:125px}}@media(max-width:420px){main{padding:10px}.panel{padding:10px}.topgrid{grid-template-columns:1fr}.demoBox{min-height:115px}.cameraStage{aspect-ratio:3/4}.num{font-size:23px}}
+</style></head>
 <body><main>
-<header><h1>FITMIND <span>AI</span></h1><p class="sub">Your camera-based workout form coach</p></header>
-
-<section class="panel">
-<div class="controls">
-<div><label for="exercise">CHOOSE EXERCISE</label><select id="exercise">
-<option value="pushup">Push-up</option><option value="pullup">Pull-up</option><option value="squat">Squat</option><option value="curl">Biceps curl</option><option value="triceps">Triceps extension</option><option value="shoulderpress">Shoulder press</option><option value="lunge">Lunge</option><option value="calf">Calf raise</option><option value="glutebridge">Glute bridge</option><option value="situp">Sit-up</option><option value="crunch">Crunch</option><option value="legraise">Leg raise</option><option value="forearm">Forearm curl</option><option value="plank">Plank hold</option><option value="jumpingjack">Jumping jack</option>
-</select></div>
-<div><label for="view">CAMERA VIEW</label><select id="view"><option value="side">Side view (best for push-ups/squats)</option><option value="front">Front view (best for jumping jacks)</option></select></div>
-</div>
-<div class="row"><button id="start" class="primary">Start camera</button><button id="stop" disabled>Stop</button></div>
-<p class="hint">Use good lighting, keep your whole body in frame, and place the phone safely. Start with an easy pace.</p>
-</section>
-
-<section class="panel">
-<div class="stage"><video id="video" playsinline muted></video><canvas id="canvas"></canvas><div class="stageNote" id="stageNote">Tap “Start camera” and allow camera access.</div></div>
-</section>
-
-<section class="panel">
-<div class="stats">
-<div class="stat"><div class="num" id="reps">0</div><div class="small">GOOD REPS</div></div>
-<div class="stat"><div class="num" id="formScore">—</div><div class="small">FORM STATUS</div></div>
-<div class="stat"><div class="num" id="timer">00:00</div><div class="small">SESSION TIME</div></div>
-</div>
-<div style="height:12px"></div><p id="feedback" class="feedback neutral">Ready when you are.</p>
-<p id="detail" class="hint">Your rep is counted only when the app sees the movement pattern. A camera estimate is not a perfect form check.</p>
-<div class="row"><button id="reset">Reset reps</button><button id="voice">Voice: ON</button></div>
-</section>
-<section class="panel"><p class="hint"><b>How to get better tracking</b><br>• Keep the phone steady, about 2–3 metres away, with your full body visible.<br>• Side view is usually best for push-ups, curls and squats; front view helps jumping jacks.<br>• Wear clothes that contrast with the background and use bright, even light.<br>• Pull-ups need a safe, stable bar and the whole upper body visible. This demo may not count every rep accurately.<br>• Stop if you feel pain, dizziness or unusual discomfort. Never force a rep to satisfy the counter.</p></section>
+<header><div><h1>FITMIND <span>AI</span></h1><div class="tag">LIVE FORM COACH · V3</div></div><span class="tag">Phone-first</span></header>
+<section class="panel"><div class="topgrid">
+<div><label class="label" for="exercise">SELECT EXERCISE</label><select id="exercise">
+<option value="pushup">Push-up</option><option value="pullup">Pull-up</option><option value="squat">Squat</option><option value="curl">Biceps curl</option><option value="triceps">Triceps extension</option><option value="shoulderpress">Shoulder press</option><option value="lunge">Lunge</option><option value="calf">Calf raise</option><option value="bridge">Glute bridge</option><option value="situp">Sit-up</option><option value="crunch">Crunch</option><option value="legraise">Leg raise</option><option value="forearm">Forearm curl</option><option value="plank">Plank hold</option><option value="jack">Jumping jack</option>
+</select></div><div><label class="label" for="view">CAMERA POSITION</label><select id="view"><option value="side">Side view — most exercises</option><option value="front">Front view — jumping jacks</option></select></div>
+</div></section>
+<section class="panel"><label class="label">EXERCISE DEMO</label><div class="demoBox"><div class="demoFigure"><svg viewBox="0 0 140 120" aria-label="Animated exercise demonstration"><g id="demoPerson" class="figure"><circle cx="28" cy="20" r="9" fill="#d8eaff" stroke="none"/><path id="torso" d="M35 31 L57 57"/><path id="arm1" d="M39 35 L56 43 L66 56"/><path id="arm2" d="M39 35 L48 49 L58 61"/><path id="leg1" d="M57 57 L48 82 L42 108"/><path id="leg2" d="M57 57 L76 79 L91 106"/></g><circle class="joint" cx="57" cy="57" r="4"/><circle class="joint" cx="39" cy="35" r="4"/></svg></div><div><div class="demoTitle" id="demoTitle">Push-up</div><div class="demoText" id="demoText">Lower your chest with control, then press back up. Keep your body in one line.</div><div class="hint">Animated guide — not a recorded AI video.</div></div></div></section>
+<section class="panel"><label class="label">LIVE CAMERA — NO GREEN LINES</label><div class="cameraStage" id="cameraStage"><video id="video" playsinline muted></video><div class="camOverlay"><span class="camBadge" id="camState">Camera off</span><span class="camBadge" id="fps">AI pose check</span></div><div class="camBottom"><div class="status wait" id="status">Ready to start</div><div class="statusSub" id="statusSub">Keep your full body visible and follow the demo.</div></div></div><div class="buttons"><button class="primary" id="start">Start camera</button><button id="fullscreen">Full screen</button><button id="stop" disabled>Stop</button></div></section>
+<section class="panel"><div class="stats"><div class="stat"><div class="num" id="reps">0</div><div class="small">CORRECT REPS</div></div><div class="stat"><div class="num" id="form">—</div><div class="small">FORM CHECK</div></div><div class="stat"><div class="num" id="elapsed">00:00</div><div class="small">TIME</div></div></div><div class="buttons"><button id="reset">Reset count</button><button id="voice">Voice: ON</button></div><p class="hint" id="exerciseHint">Side view. Keep shoulders, hips and ankles visible.</p><p class="hint warn">Honest limitation: camera pose tracking can estimate body position, but cannot reliably judge every exercise or every mistake. Forearm curls and some pull-up views are especially difficult. If tracking says “Move into view”, adjust the phone rather than forcing a rep.</p></section>
 </main>
 <script type="module">
-import { PoseLandmarker, FilesetResolver, DrawingUtils } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.18";
-
-const $=id=>document.getElementById(id);
-const video=$("video"),canvas=$("canvas"),ctx=canvas.getContext("2d");
-let landmarker=null,stream=null,running=false,raf=0,lastDetect=0,lastVideoTime=-1,repCount=0,phase="up",goodCycle=true,voiceOn=true,lastSpeak=0,startAt=0,sessionInterval=0,holdStart=0,holdSeconds=0,lastHoldUpdate=0;
-let lastFeedback="",lastFeedbackAt=0,frameSkip=0;
-const exercises={
-pushup:{name:"Push-up",hint:"Side view: keep your body in a straight line. Bend elbows to lower, then press up.",type:"angle",joint:[12,14,16],down:95,up:155,top:"up",bottom:"down",bad:"Keep your body straight and lower under control."},
-pullup:{name:"Pull-up",hint:"Side view: arms straight at the bottom, then bring your chin towards bar. The camera may struggle with this movement.",type:"pullup",bad:"Avoid swinging; move smoothly and keep control."},
-squat:{name:"Squat",hint:"Side view: hips back, knees bend, then stand tall. Keep feet planted.",type:"angle",joint:[24,26,28],down:100,up:160,top:"up",bottom:"down",bad:"Keep heels planted and knees tracking with your toes."},
-curl:{name:"Biceps curl",hint:"Side view: keep upper arm near your side; bend and straighten your elbow.",type:"angle",joint:[12,14,16],down:55,up:145,top:"up",bottom:"down",bad:"Keep your elbow near your side; avoid swinging."},
-triceps:{name:"Triceps extension",hint:"Side view: bend and straighten the elbow slowly. Keep the upper arm steady.",type:"angle",joint:[12,14,16],down:75,up:150,top:"up",bottom:"down",bad:"Keep your upper arm steady and move only through a comfortable range."},
-shoulderpress:{name:"Shoulder press",hint:"Side view: start with elbows bent, then press hands overhead.",type:"shoulderpress",bad:"Keep your torso steady and do not force your shoulders."},
-lunge:{name:"Lunge",hint:"Side view: bend the front knee and return to standing with control.",type:"lunge",bad:"Keep your torso upright and front knee aligned with your foot."},
-calf:{name:"Calf raise",hint:"Keep your body visible; rise onto your toes, then lower your heels.",type:"calf",bad:"Use a steady support if needed and avoid bouncing."},
-glutebridge:{name:"Glute bridge",hint:"Side view: lie on your back, lift hips, then lower with control.",type:"bridge",bad:"Avoid over-arching your lower back."},
-situp:{name:"Sit-up",hint:"Side view: sit up in a controlled way, then return slowly.",type:"torso",bad:"Avoid pulling your neck; use a comfortable range."},
-crunch:{name:"Crunch",hint:"Side view: lift shoulders slightly, then lower. Keep neck relaxed.",type:"torso",bad:"Keep the movement small and avoid pulling your head."},
-legraise:{name:"Leg raise",hint:"Side view: lift and lower legs with control, keeping your back comfortable.",type:"legraise",bad:"Avoid arching your back; shorten the range if needed."},
-forearm:{name:"Forearm curl",hint:"Keep elbow visible and upper arm still; wrist movement is hard for this pose model to judge.",type:"forearm",bad:"Use light resistance and move your wrist slowly."},
-plank:{name:"Plank hold",hint:"Side view: hold a straight line from shoulders to hips to ankles.",type:"plank",bad:"Keep hips from sagging or rising; stop if your back hurts."},
-jumpingjack:{name:"Jumping jack",hint:"Front view: move arms and legs out, then return them together.",type:"jack",bad:"Land softly and use a comfortable range."}
+import {PoseLandmarker,FilesetResolver} from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.18";
+const $=id=>document.getElementById(id),video=$("video"),stage=$("cameraStage");
+let model=null,stream=null,running=false,raf=0,lastDetect=0,lastTime=-1,reps=0,phase="start",cycleGood=true,voiceOn=true,lastVoice=0,startTime=0,plankAt=0;
+const cfg={
+pushup:["Push-up","Lower your chest with control, then press back up. Keep your body in one line.","Bend elbows to lower, then straighten to finish one rep."],
+pullup:["Pull-up","Pull up towards the bar, then lower with control.","The camera may miss pull-ups; use a safe, stable bar."],
+squat:["Squat","Push hips back, bend knees, then stand tall.","Keep feet planted and knees aligned with toes."],
+curl:["Biceps curl","Keep upper arm near your side and bend your elbow.","Avoid swinging your body."],
+triceps:["Triceps extension","Bend and straighten your elbow with the upper arm steady.","Use a comfortable range; do not force your elbow."],
+shoulderpress:["Shoulder press","Press hands overhead, then return to shoulder level.","Keep your torso steady."],
+lunge:["Lunge","Bend the front knee and return to standing.","Keep balance and move slowly."],
+calf:["Calf raise","Rise onto your toes, then lower your heels.","Use support if balance is difficult."],
+bridge:["Glute bridge","Lift your hips, then lower with control.","Avoid over-arching your back."],
+situp:["Sit-up","Raise your torso and return slowly.","Do not pull on your neck."],
+crunch:["Crunch","Lift your shoulders slightly, then lower.","Keep your neck relaxed."],
+legraise:["Leg raise","Lift and lower your legs in a controlled way.","Keep your back comfortable."],
+forearm:["Forearm curl","Keep your elbow visible and move your wrist slowly.","Small wrist motion cannot be reliably measured by this pose model."],
+plank:["Plank hold","Keep shoulders, hips and ankles in a straight line.","Breathe steadily; stop if you feel pain."],
+jack:["Jumping jack","Move arms and feet out, then bring them back together.","Land softly and use a comfortable range."]
 };
-const connections=[[11,12],[11,13],[13,15],[12,14],[14,16],[11,23],[12,24],[23,24],[23,25],[25,27],[24,26],[26,28],[27,31],[28,32],[15,17],[15,19],[16,18],[16,20]];
-function angle(a,b,c){const r1={x:a.x-b.x,y:a.y-b.y},r2={x:c.x-b.x,y:c.y-b.y};const dot=r1.x*r2.x+r1.y*r2.y,mag=Math.hypot(r1.x,r1.y)*Math.hypot(r2.x,r2.y);return Math.acos(Math.max(-1,Math.min(1,dot/(mag||1))))*180/Math.PI}
-function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}
-function visible(lm,ids){return ids.every(i=>lm[i]&&lm[i].visibility>.45)}
-function say(text){if(!voiceOn||!window.speechSynthesis)return;const now=Date.now();if(now-lastSpeak<1300)return;lastSpeak=now;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang="en-IN";u.rate=1.02;speechSynthesis.speak(u)}catch(e){}}
-function feedback(text,type="neutral",speak=false){$("feedback").textContent=text;$("feedback").className="feedback "+type;if(text!==lastFeedback||Date.now()-lastFeedbackAt>5000){lastFeedback=text;lastFeedbackAt=Date.now();if(speak)say(text)}}
-function setDetail(text){$("detail").textContent=text}
-function addRep(){repCount++;$("reps").textContent=repCount;feedback("Good rep! Count: "+repCount,"good",true)}
-function resetState(){repCount=0;phase="up";goodCycle=true;holdStart=0;holdSeconds=0;$("reps").textContent="0";$("formScore").textContent="—";$("timer").textContent="00:00";feedback("Ready when you are.","neutral");setDetail("Rep count starts at zero.")}
-function pickSideAngle(lm,triples){const candidates=triples.filter(t=>visible(lm,t));if(!candidates.length)return null;return angle(lm[candidates[0][0]],lm[candidates[0][1]],lm[candidates[0][2]])}
-function processPose(lm,now){
- const ex=exercises[$("exercise").value];
- if(!lm||!visible(lm,[11,12,23,24])){feedback("Move back so your shoulders and hips are visible.","bad");$("formScore").textContent="—";return}
- let quality="OK",message="Good position — keep the movement controlled.",good=true;
- const elbow=pickSideAngle(lm,[[11,13,15],[12,14,16]]);
- const knee=pickSideAngle(lm,[[23,25,27],[24,26,28]]);
- const shoulder=pickSideAngle(lm,[[23,11,13],[24,12,14]]);
- const hip=pickSideAngle(lm,[[11,23,25],[12,24,26]]);
- const leftWrist=lm[15],rightWrist=lm[16],leftShoulder=lm[11],rightShoulder=lm[12],leftHip=lm[23],rightHip=lm[24],leftAnkle=lm[27],rightAnkle=lm[28];
- let value=null,up=false,down=false,canCount=true;
- switch(ex.type){
- case "angle":
-   if(ex.joint[1]===14)value=elbow; else value=knee;
-   if(value===null){feedback("Turn slightly sideways and keep the joint visible.","bad");return}
-   down=value<ex.down;up=value>ex.up;
-   if(ex.name==="Push-up"&&visible(lm,[11,12,23,24])){const bodyAngle=angle(lm[11],lm[23],lm[27]);if(bodyAngle<145){good=false;message="Keep shoulders, hips and ankles in a straighter line."}}
-   if(ex.name==="Biceps curl"||ex.name==="Triceps extension"){if(shoulder!==null&&shoulder<35){good=false;message="Keep your upper arm steadier beside your body."}}
-   break;
- case "pullup":
-   if(!visible(lm,[11,12,13,14,15,16])){feedback("Keep shoulders, elbows and wrists visible.","bad");return}
-   value=elbow;down=value>150;up=value<95;
-   if(up&&phase==="up"){phase="down"}
-   if(down&&phase==="down"){phase="up";addRep()}
-   $("formScore").textContent=good?"TRACKING":"CHECK";
-   feedback(up?"Pull up with control.":down?"Arms extended — begin next rep.":"Keep moving smoothly.","neutral");
-   setDetail(ex.hint);return;
- case "shoulderpress":
-   if(elbow===null){feedback("Keep elbows visible in the camera.","bad");return}
-   const wristsAbove=(leftWrist.y<leftShoulder.y-.05&&rightWrist.y<rightShoulder.y-.05);
-   down=elbow<110;up=wristsAbove&&elbow>140;
-   break;
- case "lunge":
-   if(knee===null){feedback("Keep your knees and ankles in frame.","bad");return}
-   down=knee<105;up=knee>155;
-   break;
- case "calf":
-   if(!visible(lm,[27,28])){feedback("Keep your feet visible.","bad");return}
-   value=Math.abs(lm[27].y-lm[23].y)+Math.abs(lm[28].y-lm[24].y);down=value<.72;up=value>.82; // relative pose-height heuristic
-   break;
- case "bridge":
-   value=dist(lm[11],lm[23]);down=value<.18;up=value>.24;
-   break;
- case "torso":
-   if(hip===null){feedback("Keep shoulders, hips and knees visible.","bad");return}
-   down=hip<125;up=hip>145;
-   break;
- case "legraise":
-   if(!visible(lm,[23,25,27])){feedback("Keep hip, knee and ankle visible.","bad");return}
-   value=Math.abs(lm[23].y-lm[27].y);up=value<.18;down=value>.32;
-   break;
- case "forearm":
-   if(elbow===null){feedback("Keep your elbow and wrist visible.","bad");return}
-   // Pose model is not reliable for small wrist-only movement; don't falsely claim precision.
-   feedback("Arms visible. Wrist movement is too small for reliable automatic rep counting.","neutral");
-   $("formScore").textContent="LIMITED";setDetail(ex.hint);return;
- case "plank":
-   const lineAngle=angle(lm[11],lm[23],lm[27]);
-   good=lineAngle>155;
-   if(good){if(!holdStart)holdStart=now;holdSeconds=Math.floor((now-holdStart)/1000);$("reps").textContent="—";$("formScore").textContent="GOOD";feedback("Plank form looks steady — hold and breathe.","good")}
-   else{holdStart=0;holdSeconds=0;$("formScore").textContent="CHECK";feedback("Try to keep shoulders, hips and ankles in one line.","bad",true)}
-   $("timer").textContent="00:"+String(holdSeconds).padStart(2,"0");setDetail(ex.hint);return;
- case "jack":
-   const armsUp=leftWrist.y<leftShoulder.y&&rightWrist.y<rightShoulder.y;
-   const legsApart=Math.abs(lm[27].x-lm[28].x)>.28;
-   const armsDown=leftWrist.y>leftShoulder.y&&rightWrist.y>rightShoulder.y;
-   const legsTogether=Math.abs(lm[27].x-lm[28].x)<.18;
-   up=armsUp&&legsApart;down=armsDown&&legsTogether;break;
+const limbIds=[11,12,13,14,15,16,23,24,25,26,27,28];
+function angle(a,b,c){let v1=[a.x-b.x,a.y-b.y],v2=[c.x-b.x,c.y-b.y],d=v1[0]*v2[0]+v1[1]*v2[1],m=Math.hypot(...v1)*Math.hypot(...v2);return Math.acos(Math.max(-1,Math.min(1,d/(m||1))))*180/Math.PI}
+function vis(lm,ids){return ids.every(i=>lm[i]&&lm[i].visibility>.55)}
+function say(s){if(!voiceOn||!window.speechSynthesis||Date.now()-lastVoice<1800)return;lastVoice=Date.now();speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(s);u.lang="en-IN";u.rate=1;speechSynthesis.speak(u)}
+function status(s,type="wait",sub=""){ $("status").textContent=s;$("status").className="status "+type;$("statusSub").textContent=sub;if(type==="bad")say(s)}
+function updateDemo(){let id=$("exercise").value,c=cfg[id];$("demoTitle").textContent=c[0];$("demoText").textContent=c[1];$("exerciseHint").textContent=c[2];phase="start";cycleGood=true;plankAt=0}
+function count(){reps++;$("reps").textContent=reps;status("Correct rep: "+reps,"good","Nice — complete one controlled rep at a time.");say("Good rep. "+reps)}
+function pose(lm,now){
+ let id=$("exercise").value;
+ if(!vis(lm,[11,12,23,24])){status("Move into full view","bad","Keep shoulders and hips visible; step back and improve lighting.");$("form").textContent="—";return}
+ let elbow=null,knee=null,hip=null,body=null;
+ if(vis(lm,[11,13,15]))elbow=angle(lm[11],lm[13],lm[15]);
+ else if(vis(lm,[12,14,16]))elbow=angle(lm[12],lm[14],lm[16]);
+ if(vis(lm,[23,25,27]))knee=angle(lm[23],lm[25],lm[27]);
+ else if(vis(lm,[24,26,28]))knee=angle(lm[24],lm[26],lm[28]);
+ if(vis(lm,[11,23,25]))hip=angle(lm[11],lm[23],lm[25]);
+ else if(vis(lm,[12,24,26]))hip=angle(lm[12],lm[24],lm[26]);
+ if(vis(lm,[11,23,27]))body=angle(lm[11],lm[23],lm[27]);else if(vis(lm,[12,24,28]))body=angle(lm[12],lm[24],lm[28]);
+ let down=false,up=false,valid=true,problem="";
+ if(id==="pushup"){
+  if(elbow===null||body===null){valid=false;problem="Side view needed — show shoulder, elbow, hip and ankle."}
+  else {down=elbow<105;up=elbow>150;if(body<150){cycleGood=false;problem="Incorrect form: keep your body straighter."}else if(body<160){cycleGood=false;problem="Body line is bending — adjust hips."}}
+ }else if(id==="squat"||id==="lunge"){
+  if(knee===null){valid=false;problem="Keep knee and ankle visible from the side."}else{down=knee<105;up=knee>155;if(hip!==null&&hip<45){cycleGood=false;problem="Keep your torso controlled."}}
+ }else if(["curl","triceps","pullup"].includes(id)){
+  if(elbow===null){valid=false;problem="Keep shoulder, elbow and wrist visible."}else if(id==="pullup"){down=elbow>150;up=elbow<95}else{down=elbow<(id==="curl"?65:85);up=elbow>145;if(body!==null&&body<130){cycleGood=false;problem="Keep your torso steady; avoid swinging."}}
+ }else if(id==="shoulderpress"){
+  if(elbow===null||!vis(lm,[15,16])){valid=false;problem="Keep both arms in view."}else{down=elbow<110;up=elbow>145&&lm[15].y<lm[11].y&&lm[16].y<lm[12].y}
+ }else if(id==="situp"||id==="crunch"){
+  if(hip===null){valid=false;problem="Side view needed; keep torso and hips visible."}else{down=hip<115;up=hip>145}
+ }else if(id==="bridge"){
+  if(!vis(lm,[11,23,25,27])){valid=false;problem="Keep shoulder, hip, knee and ankle visible."}else{let d=Math.abs(lm[23].y-lm[11].y);down=d>.2;up=d<.13}
+ }else if(id==="legraise"){
+  if(!vis(lm,[23,25,27])){valid=false;problem="Keep hip, knee and ankle visible."}else{let d=Math.abs(lm[27].y-lm[23].y);up=d<.2;down=d>.32}
+ }else if(id==="calf"){
+  valid=false;problem="Calf raises need foot/heel motion; this camera model cannot count them reliably yet."
+ }else if(id==="forearm"){
+  valid=false;problem="Wrist motion is too small for reliable rep counting with this model."
+ }else if(id==="plank"){
+  if(body!==null&&body>155){if(!plankAt)plankAt=now;$("reps").textContent="—";$("form").textContent="GOOD";status("Plank form looks steady","good","Hold and breathe. Time: "+Math.floor((now-plankAt)/1000)+"s");return}else{plankAt=0;$("form").textContent="CHECK";status("Adjust your body line","bad","Try to keep shoulders, hips and ankles aligned.");return}
+ }else if(id==="jack"){
+  if(!vis(lm,[15,16,27,28])){valid=false;problem="Front view: keep both hands and feet visible."}else{up=lm[15].y<lm[11].y&&lm[16].y<lm[12].y&&Math.abs(lm[27].x-lm[28].x)>.28;down=lm[15].y>lm[11].y&&lm[16].y>lm[12].y&&Math.abs(lm[27].x-lm[28].x)<.2}
  }
- if(value!==null&&Number.isFinite(value)){$("formScore").textContent=good?"GOOD":"CHECK"}else $("formScore").textContent=good?"TRACKING":"CHECK";
- if(!good){goodCycle=false;feedback(message,"bad",true)}
- else if(up||down){feedback(message,"good")}
- else {feedback("Move through a comfortable full range, slowly.","neutral")}
- if(down){phase="down";if(!good)goodCycle=false}
- if(up&&phase==="down"){if(good&&goodCycle)addRep();else feedback("Rep not counted — check your form and try again.","bad",true);phase="up";goodCycle=true}
- setDetail(ex.hint+" If the pose is partly hidden, the count may be missed.");
+ if(!valid){$("form").textContent="LIMIT";status("Tracking limitation","wait",problem);return}
+ if(problem){$("form").textContent="CHECK";status(problem,"bad","This rep will not count if the form check fails.");cycleGood=false}
+ else{$("form").textContent="TRACK";status(down?"Lower / return with control":up?"Finish the movement":"Move slowly through the range","wait",cfg[id][2])}
+ if(down){phase="down"}
+ if(up&&phase==="down"){
+   if(cycleGood&&!problem)count();else status("Incorrect rep — not counted","bad","Reset your position and try again.");
+   phase="start";cycleGood=true
+ }
 }
 async function start(){
- if(running)return;
  try{
-  $("stageNote").textContent="Loading pose tracker…";
-  if(!landmarker){const vision=await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.18/wasm");landmarker=await PoseLandmarker.createFromOptions(vision,{baseOptions:{modelAssetPath:"https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task",delegate:"CPU"},runningMode:"VIDEO",numPoses:1,minPoseDetectionConfidence:.5,minPosePresenceConfidence:.5,minTrackingConfidence:.5})}
-  stream=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:"user",width:{ideal:480},height:{ideal:360},frameRate:{ideal:20,max:24}}});
-  video.srcObject=stream;await video.play();canvas.width=480;canvas.height=360;
-  running=true;startAt=performance.now();$("start").disabled=true;$("stop").disabled=false;$("stageNote").textContent="Tracking on — keep your body visible.";
-  loop();
- }catch(e){console.error(e);$("stageNote").textContent="Could not start. Use HTTPS, allow camera permission, and close other camera apps.";feedback("Camera/model failed to load. Check internet and camera permission.","bad");$("start").disabled=false;$("stop").disabled=true}
+  if(!navigator.mediaDevices?.getUserMedia)throw new Error("Camera needs HTTPS");
+  $("start").disabled=true;status("Loading AI pose tracker","wait","Please wait; first load needs internet.");
+  if(!model){let v=await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.18/wasm");model=await PoseLandmarker.createFromOptions(v,{baseOptions:{modelAssetPath:"https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task",delegate:"CPU"},runningMode:"VIDEO",numPoses:1,minPoseDetectionConfidence:.55,minPosePresenceConfidence:.55,minTrackingConfidence:.55})}
+  stream=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:"user",width:{ideal:480},height:{ideal:640},frameRate:{ideal:20,max:24}}});video.srcObject=stream;await video.play();running=true;startTime=performance.now();$("camState").textContent="Camera on";$("stop").disabled=false;status("Tracking started","good","Move into the centre of the camera view.");loop()
+ }catch(e){console.error(e);status("Camera failed to start","bad","Use the GitHub Pages HTTPS link, allow camera permission, and check internet.");$("start").disabled=false}
 }
 function loop(now=performance.now()){
- if(!running)return;
- raf=requestAnimationFrame(loop);
- if(video.readyState<2||now-lastDetect<75||video.currentTime===lastVideoTime)return;
- lastDetect=now;lastVideoTime=video.currentTime;
- try{
-  const result=landmarker.detectForVideo(video,now);ctx.clearRect(0,0,canvas.width,canvas.height);
-  if(result.landmarks&&result.landmarks.length){
-   const lm=result.landmarks[0];ctx.lineWidth=3;ctx.strokeStyle="#54f0b5";ctx.fillStyle="#eafff6";
-   for(const [a,b] of connections){if(lm[a].visibility>.4&&lm[b].visibility>.4){ctx.beginPath();ctx.moveTo(lm[a].x*canvas.width,lm[a].y*canvas.height);ctx.lineTo(lm[b].x*canvas.width,lm[b].y*canvas.height);ctx.stroke()}}
-   for(const p of lm){if(p.visibility>.5){ctx.beginPath();ctx.arc(p.x*canvas.width,p.y*canvas.height,3,0,Math.PI*2);ctx.fill()}}
-   processPose(lm,now);
-  }else{feedback("No body detected — step back and improve lighting.","bad")}
-  const sec=Math.floor((now-startAt)/1000);$("timer").textContent=String(Math.floor(sec/60)).padStart(2,"0")+":"+String(sec%60).padStart(2,"0");
- }catch(e){console.warn(e)}
+ if(!running)return;raf=requestAnimationFrame(loop);
+ if(video.readyState<2||now-lastDetect<110||video.currentTime===lastTime)return;
+ lastDetect=now;lastTime=video.currentTime;
+ try{let r=model.detectForVideo(video,now);if(r.landmarks?.length)pose(r.landmarks[0],now);else{status("No body detected","bad","Step back, show your full body and improve lighting.")}let s=Math.floor((now-startTime)/1000);$("elapsed").textContent=String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}catch(e){console.warn(e)}
 }
-function stop(){running=false;cancelAnimationFrame(raf);if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}video.srcObject=null;ctx.clearRect(0,0,canvas.width,canvas.height);$("start").disabled=false;$("stop").disabled=true;$("stageNote").textContent="Camera stopped. Tap Start camera to continue."}
-$("start").addEventListener("click",start);$("stop").addEventListener("click",stop);$("reset").addEventListener("click",resetState);
-$("voice").addEventListener("click",()=>{voiceOn=!voiceOn;$("voice").textContent="Voice: "+(voiceOn?"ON":"OFF");if(!voiceOn&&window.speechSynthesis)speechSynthesis.cancel();else say("Voice coaching on")});
-$("exercise").addEventListener("change",()=>{phase="up";goodCycle=true;holdStart=0;feedback(exercises[$("exercise").value].name+" selected. Ready to start.","neutral");setDetail(exercises[$("exercise").value].hint);$("formScore").textContent="—"});
-window.addEventListener("pagehide",stop);
-setDetail(exercises[$("exercise").value].hint);
+function stop(){running=false;cancelAnimationFrame(raf);if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;video.srcObject=null;$("start").disabled=false;$("stop").disabled=true;$("camState").textContent="Camera off";status("Camera stopped","wait","Tap Start camera when ready.");}
+$("start").onclick=start;$("stop").onclick=stop;$("reset").onclick=()=>{reps=0;$("reps").textContent="0";phase="start";cycleGood=true;plankAt=0;status("Count reset","wait","Ready for your next set.")};
+$("exercise").onchange=updateDemo;$("view").onchange=()=>{status("Camera position updated","wait","Turn your body to match the selected camera view.")};
+$("voice").onclick=()=>{voiceOn=!voiceOn;$("voice").textContent="Voice: "+(voiceOn?"ON":"OFF");if(!voiceOn&&window.speechSynthesis)speechSynthesis.cancel();else say("Voice coaching on")};
+$("fullscreen").onclick=async()=>{try{if(!document.fullscreenElement)await stage.requestFullscreen();else await document.exitFullscreen()}catch(e){status("Full screen unavailable","wait","Use your browser menu to enter full screen.")}};
+window.addEventListener("pagehide",stop);updateDemo();
 </script></body></html>
