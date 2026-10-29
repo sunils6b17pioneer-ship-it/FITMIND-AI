@@ -1,595 +1,106 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#07110d">
-<title>FITMIND AI — Live Trainer</title>
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101a24">
+<title>FITMIND AI — Smart Workout Studio</title>
 <style>
-:root {
-  --bg:#07110d; --panel:#101d17; --green:#45ff9a;
-  --muted:#a2b6aa; --red:#ff6262; --yellow:#ffd166;
-}
-* { box-sizing:border-box; }
-body {
-  margin:0; background:var(--bg); color:white;
-  font-family:Arial,Helvetica,sans-serif;
-}
-header {
-  padding:19px 16px 14px;
-  border-bottom:1px solid #20382b;
-  background:#09150f;
-}
-.logo { color:var(--green); font-weight:900; letter-spacing:2px; font-size:22px; }
-.subtitle { color:var(--muted); font-size:12px; margin-top:5px; }
-main { width:min(850px,100%); margin:auto; padding:14px; }
-.controls { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
-select,button {
-  border:1px solid #294638; border-radius:10px;
-  padding:12px; font-size:14px; color:white;
-  background:#13231a;
-}
-select { flex:1; min-width:140px; }
-button { cursor:pointer; font-weight:bold; }
-button.primary { background:var(--green); color:#06130b; border-color:var(--green); }
-button:disabled { opacity:.5; }
-.camera {
-  position:relative; width:100%; aspect-ratio:4/3;
-  overflow:hidden; background:#020604;
-  border:1px solid #284332; border-radius:16px;
-}
-video,canvas {
-  position:absolute; inset:0; width:100%; height:100%;
-  object-fit:cover; transform:scaleX(-1);
-}
-video { opacity:1; }
-canvas { pointer-events:none; }
-.camera-label {
-  position:absolute; z-index:2; top:10px; left:10px;
-  padding:7px 10px; border-radius:7px;
-  background:#07110ddd; color:var(--green); font-size:11px;
-}
-.camera-label.right { left:auto; right:10px; }
-.status {
-  padding:12px; margin-top:12px; border-radius:10px;
-  background:var(--panel); border:1px solid #263d30;
-  font-size:14px; line-height:1.5;
-}
-.status strong { color:var(--green); }
-.stats {
-  display:grid; grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:8px; margin-top:12px;
-}
-.stat {
-  background:var(--panel); border:1px solid #263d30;
-  border-radius:12px; padding:14px 8px; text-align:center;
-  min-width:0;
-}
-.stat .value { color:var(--green); font-size:26px; font-weight:900; }
-.stat .label { color:var(--muted); font-size:11px; margin-top:5px; }
-.panel {
-  margin-top:12px; padding:15px; background:var(--panel);
-  border:1px solid #263d30; border-radius:12px;
-}
-.panel h3 { margin:0 0 10px; font-size:15px; }
-#feedback { font-weight:bold; line-height:1.5; }
-#tips { color:var(--muted); font-size:13px; line-height:1.7; }
-.small { color:var(--muted); font-size:12px; line-height:1.6; }
-footer { text-align:center; padding:20px; color:#74887b; font-size:11px; }
+:root{--bg:#0d141d;--panel:#17232e;--panel2:#1d2d39;--mint:#8df5c2;--blue:#9ed9ff;--text:#f3f7fa;--muted:#a8b8c4;--line:#304452;--red:#ff8585;--gold:#ffd58a}
+*{box-sizing:border-box}body{margin:0;color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(ellipse at 10% 0%,#243b4a 0,transparent 42%),radial-gradient(ellipse at 100% 30%,#1c3b39 0,transparent 38%),linear-gradient(145deg,#0b1119,#101c26 55%,#101b22);min-height:100vh}
+header{padding:22px 17px 18px;border-bottom:1px solid #ffffff12;background:#0c151bcc;backdrop-filter:blur(14px)}
+.head{max-width:980px;margin:auto;display:flex;justify-content:space-between;gap:12px;align-items:center}.brand{font-size:23px;font-weight:950;letter-spacing:2px}.brand span{color:var(--mint)}.tag{font-size:11px;color:var(--muted);letter-spacing:1.5px;margin-top:5px}.pill{font-size:11px;padding:8px 10px;border:1px solid #456055;border-radius:30px;color:var(--mint);white-space:nowrap}
+main{max-width:980px;margin:auto;padding:16px}.welcome{padding:18px;border:1px solid #ffffff17;border-radius:20px;background:linear-gradient(120deg,#203442cc,#172a2bcc);margin-bottom:14px}.welcome .date{color:var(--mint);font-size:12px;font-weight:750;letter-spacing:.8px}.welcome h1{font-size:clamp(24px,5vw,34px);line-height:1.15;margin:9px 0}.welcome p{margin:0;color:var(--muted);font-size:13px;line-height:1.6}
+.layout{display:grid;grid-template-columns:1.15fr .85fr;gap:14px}.card{background:#15212bdc;border:1px solid #ffffff16;border-radius:18px;padding:14px;min-width:0;box-shadow:0 12px 30px #00000012}.card h2{font-size:15px;margin:0 0 12px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}select,button{font:inherit;border-radius:11px;padding:12px;border:1px solid var(--line);background:#1b2b37;color:var(--text)}select{width:100%;margin-bottom:10px}button{cursor:pointer;font-weight:750}button:disabled{opacity:.45;cursor:not-allowed}.primary{background:var(--mint);color:#10241d;border-color:var(--mint)}.secondary{background:#21313e}.camera{position:relative;width:100%;aspect-ratio:4/3;background:#05090d;border-radius:14px;overflow:hidden;border:1px solid #354957}.camera video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1);display:block}.camlabel{position:absolute;top:10px;left:10px;border-radius:20px;background:#071018d9;padding:7px 10px;font-size:10px;letter-spacing:.8px;color:var(--mint)}.camlabel.r{left:auto;right:10px}.cameraHint{position:absolute;inset:auto 10px 10px;padding:9px 10px;background:#071018c9;border-radius:10px;color:#d7e4ec;font-size:11px;line-height:1.45}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.stat{background:#1c2b36;border:1px solid #ffffff12;border-radius:13px;padding:12px 5px;text-align:center}.num{font-size:clamp(21px,4vw,29px);font-weight:900;color:var(--mint)}.lbl{font-size:10px;color:var(--muted);margin-top:4px;letter-spacing:.5px}.status{padding:12px;border-radius:12px;background:#1b2b35;margin-top:10px;font-size:13px;line-height:1.55;border:1px solid #ffffff12}.status.good{border-color:#4c9876}.status.bad{border-color:#a95858;color:#ffe0e0}.status strong{color:var(--mint)}.status.bad strong{color:var(--red)}.bigTimer{font-size:35px;font-weight:900;letter-spacing:1px;color:var(--blue)}.sub{font-size:12px;color:var(--muted);line-height:1.6}.divider{height:1px;background:#ffffff13;margin:14px 0}.coach{font-size:15px;font-weight:800;line-height:1.5}.coachdetail{font-size:12px;color:var(--muted);line-height:1.55;margin-top:6px}.exerciseGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.exerciseTag{border:1px solid #ffffff13;background:#1b2b36;border-radius:10px;padding:10px;font-size:12px;color:#d8e7ed}.footnote{font-size:11px;color:#90a3b0;line-height:1.55;margin:14px 2px}footer{text-align:center;color:#7f929e;font-size:10px;padding:20px}
+@media(max-width:720px){.layout{grid-template-columns:1fr}.head{align-items:flex-start}.pill{max-width:115px;white-space:normal;text-align:center}.card{padding:12px}main{padding:12px}.welcome{padding:15px}}
 </style>
 </head>
-
 <body>
-<header>
-  <div class="logo">FITMIND AI</div>
-  <div class="subtitle">LIVE TRAINER · POSE TRACKING · FORM FEEDBACK</div>
-</header>
-
+<header><div class="head"><div><div class="brand">FITMIND <span>AI</span></div><div class="tag">SMART WORKOUT STUDIO · LIVE COACH</div></div><div class="pill" id="topState">● READY TO TRAIN</div></div></header>
 <main>
-  <div class="controls">
-    <select id="exercise" aria-label="Choose exercise">
-      <option value="pushup">Push-ups</option>
-      <option value="squat">Squats</option>
-      <option value="curl">Biceps curls</option>
-    </select>
-    <button id="start" class="primary">START CAMERA</button>
-    <button id="stop" disabled>STOP</button>
-    <button id="reset">RESET REPS</button>
-  </div>
-
-  <div class="camera">
-    <video id="video" autoplay muted playsinline></video>
-    <canvas id="canvas"></canvas>
-    <div class="camera-label" id="liveBadge">CAMERA OFF</div>
-    <div class="camera-label right" id="poseBadge">AI NOT READY</div>
-  </div>
-
-  <div class="status" id="status">
-    <strong>Ready.</strong> Select an exercise and press START CAMERA.
-  </div>
-
-  <div class="stats">
-    <div class="stat">
-      <div class="value" id="reps">0</div>
-      <div class="label">REPS</div>
-    </div>
-    <div class="stat">
-      <div class="value" id="stage">—</div>
-      <div class="label">MOVEMENT</div>
-    </div>
-    <div class="stat">
-      <div class="value" id="formScore">—</div>
-      <div class="label">FORM CHECK</div>
-    </div>
-  </div>
-
-  <div class="panel">
-    <h3>AI Coach Feedback</h3>
-    <div id="feedback">Waiting for camera and pose tracking.</div>
-    <p class="small" id="details">Position your whole body inside the camera frame.</p>
-  </div>
-
-  <div class="panel">
-    <h3>How to get accurate tracking</h3>
-    <div id="tips">
-      • Place your phone securely where your whole body is visible.<br>
-      • Use bright lighting and keep the camera unobstructed.<br>
-      • For push-ups, a side view helps the AI estimate elbow bend and body alignment.<br>
-      • Wait for the green skeleton before beginning.
-    </div>
-  </div>
-
-  <p class="small">
-    FITMIND AI uses camera-based landmark estimates. Occlusion, camera angle,
-    lighting and movement speed can cause missed reps or incorrect warnings.
-    Stop if you feel pain or dizziness. This demo is not a substitute for a
-    qualified fitness professional.
-  </p>
+<section class="welcome"><div class="date" id="dateLine">YOUR DAILY SESSION</div><h1 id="greeting">Build strength, one rep at a time.</h1><p>Camera-based movement estimates, rep tracking and spoken coaching in one place. Keep your full movement visible for better results.</p></section>
+<div class="layout">
+<section class="card">
+<h2>01 / Live movement camera</h2>
+<select id="exercise" aria-label="Choose exercise">
+<option value="pushup">Push-ups</option><option value="squat">Squats</option><option value="curl">Biceps curls</option><option value="lunge">Lunges</option><option value="shoulder">Shoulder press</option><option value="situp">Sit-ups / crunches</option><option value="side_raise">Lateral raises</option><option value="triceps">Triceps extensions</option><option value="calf">Calf raises</option><option value="jumping">Jumping jacks</option><option value="plank">Plank hold</option>
+</select>
+<div class="camera"><video id="video" autoplay muted playsinline></video><div class="camlabel" id="camState">CAMERA OFF</div><div class="camlabel r" id="poseState">AI NOT READY</div><div class="cameraHint" id="camHint">No skeleton overlay. Keep your full body visible and use steady lighting.</div></div>
+<div class="row" style="margin-top:10px"><button id="start" class="primary" style="flex:1">START SESSION</button><button id="stop" class="secondary" disabled>STOP</button><button id="reset" class="secondary">RESET</button></div>
+<div class="status" id="status"><strong>Ready.</strong> Choose an exercise, then start your camera.</div>
+<p class="sub">Tip: for push-ups and squats, a side view usually makes joint-angle estimates easier. Keep the phone stable.</p>
+</section>
+<section class="card">
+<h2>02 / Your workout</h2>
+<div class="stats">
+<div class="stat"><div class="num" id="reps">0</div><div class="lbl">REPS</div></div>
+<div class="stat"><div class="num" id="timer">00:00</div><div class="lbl">SESSION TIME</div></div>
+<div class="stat"><div class="num" id="form">—</div><div class="lbl">FORM STATUS</div></div>
+</div>
+<div class="divider"></div><div class="sub">CURRENT MOVEMENT</div><div class="coach" id="movement">Waiting for camera</div>
+<div class="divider"></div><div class="sub">AI VOICE COACH</div><div class="coach" id="feedback">Start the camera to begin tracking.</div><div class="coachdetail" id="detail">If form looks incorrect, the counter pauses and the coach explains a correction.</div>
+<div class="divider"></div><div class="sub">SESSION SUMMARY</div><div class="coach" id="summary">0 reps completed</div><div class="coachdetail" id="sessionNote">Timer begins when the camera session starts.</div>
+</section>
+</div>
+<section class="card" style="margin-top:14px"><h2>03 / Exercises included</h2><div class="exerciseGrid"><div class="exerciseTag">Push-ups · elbow bend</div><div class="exerciseTag">Squats · knee bend</div><div class="exerciseTag">Biceps curls · elbow bend</div><div class="exerciseTag">Lunges · knee bend</div><div class="exerciseTag">Shoulder press · arm raise</div><div class="exerciseTag">Sit-ups / crunches · torso angle</div><div class="exerciseTag">Lateral raises · arm lift</div><div class="exerciseTag">Triceps extensions · elbow bend</div><div class="exerciseTag">Calf raises · heel movement</div><div class="exerciseTag">Jumping jacks · arm/leg spread</div><div class="exerciseTag">Plank · hold timer</div></div><p class="footnote">Different movements have different camera-angle requirements. This browser demo estimates form from visible pose landmarks; it cannot reliably detect every technique error or replace an in-person coach. Use safe, controlled movement and stop if you feel pain.</p></section>
 </main>
-
-<footer>FITMIND AI · Runs in your browser · GitHub Pages compatible</footer>
-
+<footer>FITMIND AI · Built for mobile Chrome and GitHub Pages</footer>
 <script type="module">
-import {
-  PoseLandmarker,
-  FilesetResolver
-} from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14";
-
-const $ = id => document.getElementById(id);
-const video = $("video");
-const canvas = $("canvas");
-const ctx = canvas.getContext("2d");
-
-let landmarker = null;
-let stream = null;
-let running = false;
-let busy = false;
-let rafId = 0;
-let lastVideoTime = -1;
-let lastPoseTime = 0;
-let reps = 0;
-let stage = "—";
-let lastStage = "";
-let badFrames = 0;
-let goodFrames = 0;
-let lastSpoken = "";
-let lastSpokenAt = 0;
-let lastFeedbackAt = 0;
-let previousAngle = null;
-let stableCount = 0;
-let lastExercise = "pushup";
-
-const connections = [
-  [11,12],[11,13],[13,15],[12,14],[14,16],
-  [11,23],[12,24],[23,24],[23,25],[25,27],
-  [24,26],[26,28],[27,29],[29,31],[28,30],[30,32],
-  [15,17],[15,19],[15,21],[16,18],[16,20],[16,22]
-];
-
-function setStatus(message) {
-  $("status").textContent = message;
+import {PoseLandmarker, FilesetResolver} from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14";
+const $=id=>document.getElementById(id), video=$("video");
+let pose=null,stream=null,running=false,raf=0,busy=false,lastVideo=-1,lastInfer=0,startAt=0,elapsed=0,timerInterval=0;
+let reps=0,phase="start",badCount=0,goodCount=0,lastWarn="",lastWarnAt=0,lastSpeechAt=0,lastPhrase="",exercisePrev="pushup",plankGoodAt=0,plankSeconds=0,lastPlankTick=0;
+const names={pushup:"Push-ups",squat:"Squats",curl:"Biceps curls",lunge:"Lunges",shoulder:"Shoulder press",situp:"Sit-ups / crunches",side_raise:"Lateral raises",triceps:"Triceps extensions",calf:"Calf raises",jumping:"Jumping jacks",plank:"Plank hold"};
+function dateGreeting(){let d=new Date(),h=d.getHours();$("dateLine").textContent=d.toLocaleDateString("en-IN",{weekday:"long",day:"numeric",month:"long",year:"numeric"}).toUpperCase();$("greeting").textContent=h<12?"Good morning. Ready to move?":h<17?"Good afternoon. Let's train smart.":"Good evening. Build strength, one rep at a time."}
+dateGreeting();
+function setStatus(msg,bad=false){$("status").className="status"+(bad?" bad":"");$("status").innerHTML="<strong>"+(bad?"FORM CHECK":"FITMIND")+"</strong> "+msg}
+function say(msg,force=false){if(!("speechSynthesis"in window))return;let now=Date.now();if(!force&&msg===lastPhrase&&now-lastSpeechAt<9000)return;if(!force&&now-lastSpeechAt<2800)return;lastPhrase=msg;lastSpeechAt=now;speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(msg);u.lang="en-IN";u.rate=.96;speechSynthesis.speak(u)}
+function feedback(title,detail,good=true){$("feedback").textContent=title;$("detail").textContent=detail;$("form").textContent=good?"OK":"FIX";$("form").style.color=good?"var(--mint)":"var(--red)"}
+function warn(title,detail){feedback(title,detail,false);setStatus(title+" "+detail,true);let now=Date.now();if(title!==lastWarn||now-lastWarnAt>6500){say(title+". "+detail);lastWarn=title;lastWarnAt=now}}
+function countRep(){reps++;$("reps").textContent=reps;$("summary").textContent=reps+" rep"+(reps===1?"":"s")+" completed";say("Perfect. Rep "+reps,true);feedback("Perfect! Rep "+reps+" completed.","That rep met the movement range this demo checks.",true);setStatus("Perfect rep detected. Keep your movement controlled.");}
+function reset(){reps=0;phase="start";badCount=0;goodCount=0;plankGoodAt=0;plankSeconds=0;$("reps").textContent="0";$("summary").textContent="0 reps completed";$("form").textContent="—";$("movement").textContent=names[$("exercise").value];feedback("Ready for your next rep.","Move slowly and keep the relevant joints visible.",true)}
+function ang(a,b,c){let x=a.x-b.x,y=a.y-b.y,u=c.x-b.x,v=c.y-b.y,m=Math.hypot(x,y)*Math.hypot(u,v);return m?Math.acos(Math.max(-1,Math.min(1,(x*u+y*v)/m)))*180/Math.PI:null}
+function vis(lm,ids,t=.5){return ids.every(i=>lm[i]&&(lm[i].visibility??1)>=t)}
+function avg(a,b){return a==null?b:b==null?a:(a+b)/2}
+function angleSides(lm,left,right){let a=null;if(vis(lm,left,.42))a=ang(lm[left[0]],lm[left[1]],lm[left[2]]);if(vis(lm,right,.42))a=avg(a,ang(lm[right[0]],lm[right[1]],lm[right[2]]));return a}
+function jointRep(value,low,high,wrong,detail){if(value==null){warn("I cannot see the key joints.","Move into frame and improve the light. Counter paused.");return}if(wrong){badCount++;goodCount=0;if(badCount>=4){warn(wrong,detail);return}}else{goodCount++;if(goodCount>=3)badCount=0}
+if(value<low){if(phase!=="down"){phase="down";feedback("Good range detected.","Now return smoothly to the starting position.",true)}}
+else if(value>high){if(phase==="down"&&badCount<4)countRep();else if(phase!=="up")feedback("Top position detected.","Lower slowly through a comfortable range.",true);phase="up"}
+else{$("movement").textContent="Moving · "+Math.round(value)+"°";if(badCount>=4)return;feedback("Keep it controlled.","Complete the full comfortable range, then return to the start.",true)}
+if(badCount>=4)return;$("movement").textContent=names[$("exercise").value]+" · "+Math.round(value)+"°"}
+function process(lm){if(!lm||!vis(lm,[11,12,23,24],.3)){ $("poseState").textContent="POSE NOT FOUND";warn("I cannot see your body clearly.","Step back so the required joints are visible. Counter paused.");return}
+$("poseState").textContent="TRACKING";let ex=$("exercise").value;$("movement").textContent=names[ex];
+if(ex==="pushup"){
+let elbow=angleSides(lm,[11,13,15],[12,14,16]);
+let align=null;if(vis(lm,[11,23,27],.4))align=ang(lm[11],lm[23],lm[27]);if(vis(lm,[12,24,28],.4))align=avg(align,ang(lm[12],lm[24],lm[28]));
+let wrong=align!=null&&align<142?"Keep your body in a straighter line.":"";
+jointRep(elbow,95,150,wrong, "Keep shoulders, hips and ankles aligned; lower under control and press back up.");
+}else if(ex==="squat"){
+let knee=angleSides(lm,[23,25,27],[24,26,28]);jointRep(knee,105,158,"","Keep your feet stable and knees tracking in line with your feet.");
+}else if(ex==="curl"||ex==="triceps"){
+let e=angleSides(lm,[11,13,15],[12,14,16]);if(ex==="curl")jointRep(e,65,150,"","Keep upper arms steady; curl up, then lower slowly.");else jointRep(e,65,155,"","Keep upper arms steady and extend only through a comfortable range.");
+}else if(ex==="lunge"){
+let knee=angleSides(lm,[23,25,27],[24,26,28]);jointRep(knee,110,160,"","Take a stable stance and keep your front knee comfortable.");
+}else if(ex==="shoulder"||ex==="side_raise"){
+let left=null,right=null;if(vis(lm,[11,13,15],.4))left=ang(lm[11],lm[13],lm[15]);if(vis(lm,[12,14,16],.4))right=ang(lm[12],lm[14],lm[16]);let shoulder=avg(left,right);
+if(shoulder==null){warn("Show your arms and shoulders.","Face the camera and keep both arms visible.");return}
+if(shoulder<75){if(phase!=="down")phase="down"}else if(shoulder>145){if(phase==="down")countRep();phase="up"}$("movement").textContent=names[ex]+" · "+Math.round(shoulder)+"°";feedback("Keep your movement controlled.","Raise and lower smoothly; avoid swinging or forcing your shoulders.",true);
+}else if(ex==="situp"){
+let torso=angleSides(lm,[11,23,25],[12,24,26]);jointRep(torso,115,155,"","Move smoothly and avoid pulling your neck.");
+}else if(ex==="calf"){
+let ankleY=avg(lm[27]?.y,lm[28]?.y);if(ankleY==null){warn("Keep your ankles visible.","Stand far enough back for both feet to be seen.");return}if(phase==="start"){phase="down";previousAnkle=ankleY}let delta=ankleY-previousAnkle;if(Math.abs(delta)>.018){if(delta<0)phase="up";else if(phase==="up"){countRep();phase="down"}previousAnkle=ankleY}feedback("Rise onto your toes, then lower slowly.","Keep balance and use a stable surface if needed.",true);
+}else if(ex==="jumping"){
+let wrists=avg(lm[15]?.y,lm[16]?.y),shoulders=avg(lm[11]?.y,lm[12]?.y);if(wrists==null||shoulders==null){warn("Keep hands and shoulders visible.","Step back to fit your whole body in frame.");return}let up=wrists<shoulders-.08;if(up&&phase!=="up"){phase="up"}else if(!up&&phase==="up"){countRep();phase="down"}feedback("Open and close smoothly.","Land softly and use a comfortable pace.",true);
+}else if(ex==="plank"){
+let a=null;if(vis(lm,[11,23,27],.4))a=ang(lm[11],lm[23],lm[27]);if(vis(lm,[12,24,28],.4))a=avg(a,ang(lm[12],lm[24],lm[28]));if(a!=null&&a>145){if(!plankGoodAt)plankGoodAt=Date.now();plankSeconds=Math.floor((Date.now()-plankGoodAt)/1000);$("reps").textContent=plankSeconds+"s";$("summary").textContent=plankSeconds+" seconds held";feedback("Good plank alignment.","Keep your shoulders, hips and ankles in a steady line.",true)}else{plankGoodAt=0;warn("Adjust your plank alignment.","Try to keep shoulders, hips and ankles in a straight line. Hold timer paused.")}}
 }
-
-function setFeedback(message, detail = "") {
-  $("feedback").textContent = message;
-  $("details").textContent = detail;
-}
-
-function angle(a, b, c) {
-  const abx = a.x - b.x, aby = a.y - b.y;
-  const cbx = c.x - b.x, cby = c.y - b.y;
-  const dot = abx * cbx + aby * cby;
-  const mag = Math.hypot(abx, aby) * Math.hypot(cbx, cby);
-  if (!mag) return null;
-  return Math.acos(Math.max(-1, Math.min(1, dot / mag))) * 180 / Math.PI;
-}
-
-function midpoint(a, b) {
-  return { x:(a.x+b.x)/2, y:(a.y+b.y)/2, z:0 };
-}
-
-function average(a, b) {
-  if (a == null) return b;
-  if (b == null) return a;
-  return (a+b)/2;
-}
-
-function getAngle(lm, a, b, c) {
-  const right = angle(lm[a], lm[b], lm[c]);
-  return right;
-}
-
-function visibilityOK(lm, indices, threshold = 0.55) {
-  return indices.every(i => lm[i] && (lm[i].visibility ?? 1) >= threshold);
-}
-
-function drawPose(lm) {
-  const w = canvas.width, h = canvas.height;
-  ctx.clearRect(0,0,w,h);
-  ctx.lineWidth = Math.max(3, w * 0.006);
-  ctx.strokeStyle = "#45ff9a";
-  ctx.fillStyle = "#45ff9a";
-  ctx.lineCap = "round";
-  ctx.shadowColor = "#45ff9a";
-  ctx.shadowBlur = 7;
-
-  for (const [a,b] of connections) {
-    if (!lm[a] || !lm[b]) continue;
-    if ((lm[a].visibility ?? 1) < 0.45 || (lm[b].visibility ?? 1) < 0.45) continue;
-    ctx.beginPath();
-    ctx.moveTo(lm[a].x*w, lm[a].y*h);
-    ctx.lineTo(lm[b].x*w, lm[b].y*h);
-    ctx.stroke();
-  }
-
-  for (const p of lm) {
-    if ((p.visibility ?? 1) < 0.45) continue;
-    ctx.beginPath();
-    ctx.arc(p.x*w, p.y*h, Math.max(3,w*0.005), 0, Math.PI*2);
-    ctx.fill();
-  }
-  ctx.shadowBlur = 0;
-}
-
-function speak(message, force = false) {
-  if (!("speechSynthesis" in window)) return;
-  const now = Date.now();
-
-  // Do not repeat the same phrase rapidly.
-  if (!force && message === lastSpoken && now - lastSpokenAt < 7000) return;
-  // Limit all spoken feedback so the coach does not chatter.
-  if (!force && now - lastSpokenAt < 2600) return;
-
-  lastSpoken = message;
-  lastSpokenAt = now;
-  window.speechSynthesis.cancel();
-
-  const utterance = new SpeechSynthesisUtterance(message);
-  utterance.lang = "en-IN";
-  utterance.rate = 1.0;
-  utterance.pitch = 1.0;
-  window.speechSynthesis.speak(utterance);
-}
-
-function resetWorkout() {
-  reps = 0;
-  stage = "—";
-  lastStage = "";
-  badFrames = 0;
-  goodFrames = 0;
-  previousAngle = null;
-  stableCount = 0;
-  $("reps").textContent = "0";
-  $("stage").textContent = "—";
-  $("formScore").textContent = "—";
-  setFeedback("Counter reset.", "Get into the camera frame and wait for your skeleton.");
-}
-
-function setStage(value) {
-  stage = value;
-  $("stage").textContent = value;
-}
-
-function warn(message, detail) {
-  setFeedback("⚠ " + message, detail || "Adjust your position, then continue when comfortable.");
-  $("formScore").textContent = "CHECK";
-  if (Date.now() - lastFeedbackAt > 3500) {
-    speak(message);
-    lastFeedbackAt = Date.now();
-  }
-}
-
-function success(message, detail) {
-  setFeedback("✓ " + message, detail || "");
-  $("formScore").textContent = "OK";
-}
-
-function updatePushup(lm) {
-  // Average left/right elbow angle when both sides are visible.
-  const leftOK = visibilityOK(lm, [11,13,15,23,25,27]);
-  const rightOK = visibilityOK(lm, [12,14,16,24,26,28]);
-
-  let elbow = null;
-  if (leftOK) elbow = getAngle(lm,11,13,15);
-  if (rightOK) elbow = average(elbow, getAngle(lm,12,14,16));
-
-  if (elbow == null) {
-    setStage("FIND");
-    warn("Show your shoulders, elbows and wrists.", "Try a side view with your full upper body visible.");
-    return;
-  }
-
-  // Approximate shoulder-hip-ankle alignment from the best visible side.
-  let side = leftOK ? [11,23,27] : [12,24,28];
-  let alignment = null;
-  if (visibilityOK(lm, side, 0.45)) {
-    alignment = angle(lm[side[0]], lm[side[1]], lm[side[2]]);
-  }
-
-  // In a straight push-up, shoulder-hip-ankle angle is generally near 180°.
-  // This is only a rough 2D estimate and can be inaccurate from poor angles.
-  if (alignment != null && alignment < 145) {
-    badFrames++;
-    goodFrames = 0;
-    if (badFrames >= 4) {
-      warn("Keep your body more aligned.", "Try to keep shoulders, hips and ankles in a steady line.");
-    }
-  } else {
-    goodFrames++;
-    if (goodFrames >= 3) badFrames = 0;
-  }
-
-  // Rep state machine: lock out at top, descend, then return to top.
-  if (elbow > 150) {
-    if (stage === "DOWN" && stableCount >= 2) {
-      reps++;
-      $("reps").textContent = String(reps);
-      speak("Good rep. " + reps, true);
-      success("Rep " + reps + " counted.", "Keep your movement controlled.");
-    } else if (stage !== "TOP") {
-      success("Arms near the top position.", "Lower under control, then push back up.");
-    }
-    setStage("TOP");
-    stableCount = Math.min(stableCount + 1, 5);
-  } else if (elbow < 95) {
-    setStage("DOWN");
-    stableCount = Math.min(stableCount + 1, 5);
-    if (badFrames < 4) {
-      success("Bottom position detected.", "Push up smoothly without rushing.");
-    }
-  } else {
-    setStage("MOVING");
-    stableCount = 0;
-    if (elbow > 95 && elbow < 145 && badFrames < 4) {
-      success("Keep moving with control.", "Aim for a comfortable, consistent range of motion.");
-    }
-  }
-
-  $("formScore").textContent = badFrames >= 4 ? "CHECK" : "OK";
-  $("details").textContent =
-    "Estimated elbow angle: " + Math.round(elbow) + "°" +
-    (alignment != null ? " · Body alignment estimate: " + Math.round(alignment) + "°" : "") +
-    ". Counts require a low position followed by a return to the top.";
-}
-
-function updateSquat(lm) {
-  let knee = null;
-  if (visibilityOK(lm,[23,25,27],0.45)) knee = getAngle(lm,23,25,27);
-  if (visibilityOK(lm,[24,26,28],0.45)) knee = average(knee,getAngle(lm,24,26,28));
-
-  if (knee == null) {
-    warn("Show your hips, knees and ankles.", "Use a side view and keep your legs in frame.");
-    setStage("FIND");
-    return;
-  }
-
-  if (knee > 155) {
-    if (stage === "DOWN") {
-      reps++;
-      $("reps").textContent = String(reps);
-      speak("Good rep. " + reps, true);
-      success("Squat " + reps + " counted.", "Stand tall without locking your knees forcefully.");
-    }
-    setStage("UP");
-  } else if (knee < 105) {
-    setStage("DOWN");
-    success("Squat depth detected.", "Keep your feet stable and knees comfortable.");
-  } else {
-    setStage("MOVING");
-  }
-
-  $("formScore").textContent = "OK";
-  $("details").textContent = "Estimated knee angle: " + Math.round(knee) + "°. Camera-based depth estimates can be inaccurate.";
-}
-
-function updateCurl(lm) {
-  let elbow = null;
-  if (visibilityOK(lm,[11,13,15],0.45)) elbow = getAngle(lm,11,13,15);
-  if (visibilityOK(lm,[12,14,16],0.45)) elbow = average(elbow,getAngle(lm,12,14,16));
-
-  if (elbow == null) {
-    warn("Show your shoulder, elbow and wrist.", "A side view may help.");
-    setStage("FIND");
-    return;
-  }
-
-  if (elbow > 150) {
-    if (stage === "UP") {
-      reps++;
-      $("reps").textContent = String(reps);
-      speak("Good rep. " + reps, true);
-      success("Curl " + reps + " counted.", "Lower the weight under control.");
-    }
-    setStage("DOWN");
-  } else if (elbow < 65) {
-    setStage("UP");
-    success("Curl top position detected.", "Keep your upper arm as steady as possible.");
-  } else {
-    setStage("MOVING");
-  }
-
-  $("formScore").textContent = "OK";
-  $("details").textContent = "Estimated elbow angle: " + Math.round(elbow) + "°. Tracking may vary with camera position.";
-}
-
-function processPose(result) {
-  const lm = result.landmarks?.[0];
-  if (!lm || !visibilityOK(lm,[11,12,23,24],0.35)) {
-    $("poseBadge").textContent = "NO POSE";
-    setStage("FIND");
-    setFeedback("Move into the camera frame.", "Keep your body visible and improve the lighting.");
-    return;
-  }
-
-  $("poseBadge").textContent = "POSE TRACKING";
-  drawPose(lm);
-
-  const exercise = $("exercise").value;
-  if (exercise !== lastExercise) {
-    lastExercise = exercise;
-    resetWorkout();
-  }
-
-  if (exercise === "pushup") updatePushup(lm);
-  else if (exercise === "squat") updateSquat(lm);
-  else updateCurl(lm);
-}
-
-async function loadModel() {
-  if (landmarker) return landmarker;
-  setStatus("Loading MediaPipe AI model. Please wait…");
-  $("poseBadge").textContent = "LOADING AI";
-
-  const vision = await FilesetResolver.forVisionTasks(
-    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm"
-  );
-
-  landmarker = await PoseLandmarker.createFromOptions(vision, {
-    baseOptions: {
-      modelAssetPath:
-        "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task",
-      delegate: "CPU"
-    },
-    runningMode: "VIDEO",
-    numPoses: 1,
-    minPoseDetectionConfidence: 0.5,
-    minPosePresenceConfidence: 0.5,
-    minTrackingConfidence: 0.5
-  });
-  return landmarker;
-}
-
-function resizeCanvas() {
-  const rect = canvas.getBoundingClientRect();
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  canvas.width = Math.round(rect.width * dpr);
-  canvas.height = Math.round(rect.height * dpr);
-}
-
-async function frameLoop() {
-  if (!running) return;
-  rafId = requestAnimationFrame(frameLoop);
-
-  if (!landmarker || video.readyState < 2 || busy) return;
-  if (video.currentTime === lastVideoTime) return;
-
-  const now = performance.now();
-  // Limit inference frequency to help lower-end phones.
-  if (now - lastPoseTime < 70) return;
-
-  lastVideoTime = video.currentTime;
-  lastPoseTime = now;
-  busy = true;
-
-  try {
-    const result = landmarker.detectForVideo(video, now);
-    processPose(result);
-  } catch (e) {
-    console.error(e);
-    setStatus("Pose tracking error. Stop and restart the camera.");
-  } finally {
-    busy = false;
-  }
-}
-
-async function startCamera() {
-  $("start").disabled = true;
-  setStatus("Requesting camera permission…");
-
-  try {
-    if (!navigator.mediaDevices?.getUserMedia) {
-      throw new Error("Camera API unavailable. Open the HTTPS GitHub Pages URL in Chrome.");
-    }
-
-    await loadModel();
-
-    stream = await navigator.mediaDevices.getUserMedia({
-      audio: false,
-      video: {
-        facingMode: "user",
-        width: { ideal: 640 },
-        height: { ideal: 480 },
-        frameRate: { ideal: 24, max: 30 }
-      }
-    });
-
-    video.srcObject = stream;
-    await video.play();
-
-    resizeCanvas();
-    running = true;
-    lastVideoTime = -1;
-    $("stop").disabled = false;
-    $("liveBadge").textContent = "CAMERA LIVE";
-    $("poseBadge").textContent = "WAITING FOR POSE";
-    setStatus("Camera is live. Move fully into frame and wait for the green skeleton.");
-    setFeedback("Camera started.", "For push-ups, position the camera to see your whole body from the side.");
-    speak("Camera started. Get into position.");
-    frameLoop();
-  } catch (error) {
-    console.error(error);
-    setStatus("Could not start: " + (error.message || "Camera or AI model failed."));
-    setFeedback(
-      "Check camera permission and internet connection.",
-      "Use the HTTPS GitHub Pages URL in Chrome. Allow camera access in site settings, then try again."
-    );
-    $("start").disabled = false;
-    $("poseBadge").textContent = "AI NOT READY";
-    stopCamera(false);
-  }
-}
-
-function stopCamera(enableStart = true) {
-  running = false;
-  cancelAnimationFrame(rafId);
-  if (stream) {
-    stream.getTracks().forEach(track => track.stop());
-    stream = null;
-  }
-  video.srcObject = null;
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  $("liveBadge").textContent = "CAMERA OFF";
-  $("poseBadge").textContent = "AI PAUSED";
-  $("stop").disabled = true;
-  $("start").disabled = !enableStart;
-  if ("speechSynthesis" in window) window.speechSynthesis.cancel();
-  if (enableStart) setStatus("Camera stopped. Press START CAMERA to resume.");
-}
-
-$("start").addEventListener("click", startCamera);
-$("stop").addEventListener("click", () => stopCamera(true));
-$("reset").addEventListener("click", resetWorkout);
-
-$("exercise").addEventListener("change", () => {
-  lastExercise = $("exercise").value;
-  resetWorkout();
-  setFeedback("Exercise changed.", "Wait for pose tracking before starting your next set.");
-});
-
-window.addEventListener("resize", resizeCanvas);
-window.addEventListener("pagehide", () => stopCamera(false));
+let previousAnkle=null;
+async function load(){if(pose)return pose;setStatus("Loading pose model. This needs internet…");const v=await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm");pose=await PoseLandmarker.createFromOptions(v,{baseOptions:{modelAssetPath:"https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task",delegate:"CPU"},runningMode:"VIDEO",numPoses:1,minPoseDetectionConfidence:.55,minPosePresenceConfidence:.5,minTrackingConfidence:.5});return pose}
+function tick(){if(!running)return;raf=requestAnimationFrame(tick);if(busy||!pose||video.readyState<2||video.currentTime===lastVideo)return;let now=performance.now();if(now-lastInfer<95)return;lastInfer=now;lastVideo=video.currentTime;busy=true;try{let result=pose.detectForVideo(video,now);process(result.landmarks?.[0])}catch(e){console.error(e)}finally{busy=false}}
+async function start(){ $("start").disabled=true;try{if(!navigator.mediaDevices?.getUserMedia)throw Error("Open the HTTPS GitHub Pages site in Chrome.");await load();stream=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:"user",width:{ideal:640},height:{ideal:480},frameRate:{ideal:20,max:24}}});video.srcObject=stream;await video.play();running=true;startAt=Date.now()-elapsed;$("stop").disabled=false;$("camState").textContent="CAMERA LIVE";$("topState").textContent="● SESSION ACTIVE";$("camHint").textContent="Camera view only — skeleton overlay is disabled.";setStatus("Camera is live. Wait for tracking, then start slowly.");feedback("Camera ready.","Keep your body and required joints visible.",true);say("Camera ready. Start slowly.");clearInterval(timerInterval);timerInterval=setInterval(()=>{if(running){elapsed=Date.now()-startAt;let s=Math.floor(elapsed/1000);$("timer").textContent=String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}},500);tick()}catch(e){console.error(e);setStatus("Could not start camera or AI model: "+e.message,true);feedback("Check camera permission and internet.","Use Chrome on your HTTPS GitHub Pages URL, allow camera access, then retry.",false);$("start").disabled=false;stop(false)}}
+function stop(enable=true){running=false;cancelAnimationFrame(raf);clearInterval(timerInterval);if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}video.srcObject=null;$("camState").textContent="CAMERA OFF";$("poseState").textContent="AI PAUSED";$("topState").textContent="● SESSION PAUSED";$("stop").disabled=true;$("start").disabled=!enable;if("speechSynthesis"in window)speechSynthesis.cancel();if(enable)setStatus("Session stopped. Press START SESSION to continue.");}
+$("start").addEventListener("click",start);$("stop").addEventListener("click",()=>{elapsed=Date.now()-startAt;stop(true)});$("reset").addEventListener("click",()=>{reset();elapsed=0;$("timer").textContent="00:00";if(running)startAt=Date.now()});$("exercise").addEventListener("change",()=>{exercisePrev=$("exercise").value;reset();$("movement").textContent=names[exercisePrev];$("camHint").textContent="Camera view only — skeleton overlay is disabled.";});window.addEventListener("pagehide",()=>stop(false));
 </script>
 </body>
 </html>
