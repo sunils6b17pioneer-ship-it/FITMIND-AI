@@ -58,7 +58,9 @@ function setStatus(msg,bad=false){$("status").className="status"+(bad?" bad":"")
 function say(msg,force=false){if(!("speechSynthesis"in window))return;let now=Date.now();if(!force&&msg===lastPhrase&&now-lastSpeechAt<9000)return;if(!force&&now-lastSpeechAt<2800)return;lastPhrase=msg;lastSpeechAt=now;speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(msg);u.lang="en-IN";u.rate=.96;speechSynthesis.speak(u)}
 function feedback(title,detail,good=true){$("feedback").textContent=title;$("detail").textContent=detail;$("form").textContent=good?"OK":"FIX";$("form").style.color=good?"var(--mint)":"var(--red)"}
 function warn(title,detail){feedback(title,detail,false);setStatus(title+" "+detail,true);let now=Date.now();if(title!==lastWarn||now-lastWarnAt>6500){say(title+". "+detail);lastWarn=title;lastWarnAt=now}}
-function countRep(){reps++;$("reps").textContent=reps;$("summary").textContent=reps+" rep"+(reps===1?"":"s")+" completed";say("Perfect. Rep "+reps,true);feedback("Perfect! Rep "+reps+" completed.","That rep met the movement range this demo checks.",true);setStatus("Perfect rep detected. Keep your movement controlled.");}
+function countRep(){reps++if (window.FitFunk) {
+  window.FitFunk.correctRep();
+  };$("reps").textContent=reps;$("summary").textContent=reps+" rep"+(reps===1?"":"s")+" completed";say("Perfect. Rep "+reps,true);feedback("Perfect! Rep "+reps+" completed.","That rep met the movement range this demo checks.",true);setStatus("Perfect rep detected. Keep your movement controlled.");}
 function reset(){reps=0;phase="start";badCount=0;goodCount=0;plankGoodAt=0;plankSeconds=0;$("reps").textContent="0";$("summary").textContent="0 reps completed";$("form").textContent="—";$("movement").textContent=names[$("exercise").value];feedback("Ready for your next rep.","Move slowly and keep the relevant joints visible.",true)}
 function ang(a,b,c){let x=a.x-b.x,y=a.y-b.y,u=c.x-b.x,v=c.y-b.y,m=Math.hypot(x,y)*Math.hypot(u,v);return m?Math.acos(Math.max(-1,Math.min(1,(x*u+y*v)/m)))*180/Math.PI:null}
 function vis(lm,ids,t=.5){return ids.every(i=>lm[i]&&(lm[i].visibility??1)>=t)}
